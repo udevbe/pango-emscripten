@@ -615,6 +615,12 @@ free_metrics_info (PangoCairoFontMetricsInfo *info)
   g_slice_free (PangoCairoFontMetricsInfo, info);
 }
 
+static void
+free_metrics_info_adapter (PangoCairoFontMetricsInfo *info, gpointer user_data)
+{
+    free_metrics_info (info);
+}
+
 void
 _pango_cairo_font_private_finalize (PangoCairoFontPrivate *cf_priv)
 {
@@ -631,7 +637,7 @@ _pango_cairo_font_private_finalize (PangoCairoFontPrivate *cf_priv)
     g_free (cf_priv->glyph_extents_cache);
   cf_priv->glyph_extents_cache = NULL;
 
-  g_slist_foreach (cf_priv->metrics_by_lang, (GFunc)free_metrics_info, NULL);
+  g_slist_foreach (cf_priv->metrics_by_lang, (GFunc) free_metrics_info_adapter, NULL);
   g_slist_free (cf_priv->metrics_by_lang);
   cf_priv->metrics_by_lang = NULL;
 }

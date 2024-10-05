@@ -87,6 +87,12 @@ pango_item_copy (PangoItem *item)
   return result;
 }
 
+static void
+pango_attribute_destroy_adapter (PangoAttribute *attr, gpointer user_data)
+{
+    pango_attribute_destroy(attr);
+}
+
 /**
  * pango_item_free:
  * @item: (nullable): a `PangoItem`, may be %NULL
@@ -101,7 +107,7 @@ pango_item_free (PangoItem *item)
 
   if (item->analysis.extra_attrs)
     {
-      g_slist_foreach (item->analysis.extra_attrs, (GFunc)pango_attribute_destroy, NULL);
+      g_slist_foreach (item->analysis.extra_attrs, (GFunc) pango_attribute_destroy_adapter, NULL);
       g_slist_free (item->analysis.extra_attrs);
     }
 

@@ -191,9 +191,15 @@ scale_factor (int scale_level, double base)
 }
 
 static void
+pango_attribute_destroy_adapter(PangoAttribute *attr, gpointer user_data)
+{
+    pango_attribute_destroy(attr);
+}
+
+static void
 open_tag_free (OpenTag *ot)
 {
-  g_slist_foreach (ot->attrs, (GFunc) pango_attribute_destroy, NULL);
+  g_slist_foreach (ot->attrs, (GFunc) pango_attribute_destroy_adapter, NULL);
   g_slist_free (ot->attrs);
   g_slice_free (OpenTag, ot);
 }

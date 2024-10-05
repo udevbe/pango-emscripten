@@ -660,6 +660,12 @@ update_metrics_from_items (PangoFontMetrics *metrics,
   metrics->approximate_char_width /= text_width;
 }
 
+static void
+pango_item_free_adapter (PangoItem *item, gpointer user_data)
+{
+    pango_item_free(item);
+}
+
 /**
  * pango_context_get_metrics:
  * @context: a `PangoContext`
@@ -722,7 +728,7 @@ pango_context_get_metrics (PangoContext               *context,
 
   update_metrics_from_items (metrics, language, sample_str, text_len, items);
 
-  g_list_foreach (items, (GFunc)pango_item_free, NULL);
+  g_list_foreach (items, (GFunc) pango_item_free_adapter, NULL);
   g_list_free (items);
 
   g_object_unref (current_fonts);

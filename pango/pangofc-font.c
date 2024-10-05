@@ -158,13 +158,19 @@ free_metrics_info (PangoFcMetricsInfo *info)
 }
 
 static void
+free_metrics_info_adapter (PangoFcMetricsInfo *info, gpointer user_data)
+{
+    free_metrics_info (info);
+}
+
+static void
 pango_fc_font_finalize (GObject *object)
 {
   PangoFcFont *fcfont = PANGO_FC_FONT (object);
   PangoFcFontPrivate *priv = fcfont->priv;
   PangoFcFontMap *fontmap;
 
-  g_slist_foreach (fcfont->metrics_by_lang, (GFunc)free_metrics_info, NULL);
+  g_slist_foreach (fcfont->metrics_by_lang, (GFunc) free_metrics_info_adapter, NULL);
   g_slist_free (fcfont->metrics_by_lang);
 
   fontmap = g_weak_ref_get ((GWeakRef *) &fcfont->fontmap);
